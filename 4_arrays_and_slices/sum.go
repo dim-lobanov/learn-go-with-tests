@@ -38,10 +38,10 @@ func SumAllTails(numbersToSum ...[]int) []int {
 	return sums
 }
 
-func SumArray(arr [5]int) int {
-	sum := 0
+// If we want to pass array as a parameter, we have to specify fixed size
+func SumArray(arr [5]int) (sum int) {
 	for _, elem := range arr { // blank identifier instead of index
 		sum += elem
 	}
-	return sum
+	return
 }
