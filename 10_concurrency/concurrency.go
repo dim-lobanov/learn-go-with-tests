@@ -15,7 +15,7 @@ func CheckWebsites(wc WebsiteChecker, urls []string) map[string]bool {
 		go func(u string) {
 			//results[u] = wc(u)
 			resultChannel <- result{u, wc(u)} // Send statement
-		}(url)
+		}(url) // we pass each goroutine it's own url to check
 		// func(){}() <- func definition func(){} + call ()
 	}
 
