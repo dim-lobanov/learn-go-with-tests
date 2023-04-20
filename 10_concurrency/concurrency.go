@@ -19,8 +19,8 @@ func CheckWebsites(wc WebsiteChecker, urls []string) map[string]bool {
 		// func(){}() <- func definition func(){} + call ()
 	}
 
-	for i := 0; i < len(urls); i++ {
-		r := <-resultChannel // Receive expression
+	for i := 0; i < len(urls); i++ { 
+		r := <-resultChannel // Receive expression - it's a blocking call
 		results[r.string] = r.bool
 	}
 
