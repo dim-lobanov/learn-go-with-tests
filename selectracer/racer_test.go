@@ -1,4 +1,4 @@
-package racer
+package selectracer
 
 import (
 	"net/http"
