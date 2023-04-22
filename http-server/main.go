@@ -12,7 +12,7 @@ func main() {
 	//
 	// handler := http.HandlerFunc(PlayerServerFunc) // btw it's a type conversion
 
-	server := &PlayerServer{NewInMemoryPlayerStore()}
+	server := NewPlayerServer(NewInMemoryPlayerStore())
 	log.Fatal(http.ListenAndServe(":5000", server)) // takes a port to listen to
 	// ListenAndServe returns error, so we can wrap it with log
 }
