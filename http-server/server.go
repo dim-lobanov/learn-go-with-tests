@@ -12,17 +12,6 @@ import (
 	"strings"
 )
 
-type Player struct {
-	Name string
-	Wins int
-}
-
-type PlayerStore interface {
-	GetPlayerScore(name string) int
-	RecordWin(name string)
-	GetLeague() []Player
-}
-
 type PlayerServer struct {
 	store  PlayerStore
 	http.Handler // embedding https://go.dev/doc/effective_go#embedding
@@ -87,4 +76,3 @@ func (p *PlayerServer) showScore(w http.ResponseWriter, player string) {
 // }
 // As you'd expect if you embed a concrete type you'll have access to all its public methods and fields.
 // When embedding types, really think about what impact that has on your public API.
-

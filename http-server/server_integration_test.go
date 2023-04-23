@@ -8,7 +8,15 @@ import (
 )
 
 func TestRecordingWinsAndRetrievingThem(t *testing.T) {
-	server := NewPlayerServer(NewInMemoryPlayerStore())
+	database, cleanDatabase := createTempFile(t, "[]") // [] - empty valid json
+	defer cleanDatabase()
+	// store := NewInMemoryPlayerStore()
+	store, err := NewFileSystemPlayerStore(database)
+	if err != nil {
+		t.Fatalf("didn't expect an error but got one, %v", err)
+	}
+
+	server := NewPlayerServer(store)
 	const player = "Pepper"
 	const playersWins = 3
 
@@ -19,7 +27,7 @@ func TestRecordingWinsAndRetrievingThem(t *testing.T) {
 	t.Run("get score", func(t *testing.T) {
 		response := httptest.NewRecorder()
 		server.ServeHTTP(response, newGetScoreRequest(player))
-	
+
 		assertStatus(t, response.Code, http.StatusOK)
 		assertResponseBody(t, response.Body.String(), fmt.Sprint(playersWins))
 	})
@@ -28,7 +36,7 @@ func TestRecordingWinsAndRetrievingThem(t *testing.T) {
 		response := httptest.NewRecorder()
 		server.ServeHTTP(response, newLeagueRequest())
 		got := getLeagueFromResponse(t, response.Body)
-		want:= []Player{{"Pepper", 3}}
+		want := []Player{{"Pepper", 3}}
 
 		assertLeague(t, got, want)
 	})
