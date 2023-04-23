@@ -1,22 +1,23 @@
-package poker
+package pokertest
 
 import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"learn-go-with-tests/poker"
 )
 
 func TestRecordingWinsAndRetrievingThem(t *testing.T) {
 	database, cleanDatabase := createTempFile(t, "[]") // [] - empty valid json
 	defer cleanDatabase()
 	// store := NewInMemoryPlayerStore()
-	store, err := NewFileSystemPlayerStore(database)
+	store, err := poker.NewFileSystemPlayerStore(database)
 	if err != nil {
 		t.Fatalf("didn't expect an error but got one, %v", err)
 	}
 
-	server := NewPlayerServer(store)
+	server := poker.NewPlayerServer(store)
 	const player = "Pepper"
 	const playersWins = 3
 
@@ -36,7 +37,7 @@ func TestRecordingWinsAndRetrievingThem(t *testing.T) {
 		response := httptest.NewRecorder()
 		server.ServeHTTP(response, newLeagueRequest())
 		got := getLeagueFromResponse(t, response.Body)
-		want := []Player{{"Pepper", 3}}
+		want := []poker.Player{{Name: "Pepper", Wins: 3}}
 
 		assertLeague(t, got, want)
 	})
