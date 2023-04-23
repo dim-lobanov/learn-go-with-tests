@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"learn-go-with-tests/poker"
 )
 
 const dbFileName = "game.db.json"
@@ -20,11 +21,11 @@ func main() {
 		log.Fatalf("problem opening %s %v", dbFileName, err)
 	}
 
-	store, err := NewFileSystemPlayerStore(database)
+	store, err := poker.NewFileSystemPlayerStore(database)
 	if err != nil {
 		log.Fatalf("problem creating file system player store, %v ", err)
 	}
-	server := NewPlayerServer(store)
+	server := poker.NewPlayerServer(store)
 
 	log.Fatal(http.ListenAndServe(":5000", server)) // takes a port to listen to, starts server (http.Handler) basically
 	// ListenAndServe returns error, so we can wrap it with log

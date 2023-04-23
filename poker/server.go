@@ -1,4 +1,4 @@
-package main
+package poker
 
 // To create a web server in Go you will typically call ListenAndServe:
 // func ListenAndServe(addr string, handler Handler) error
