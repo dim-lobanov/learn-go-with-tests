@@ -2,6 +2,7 @@ package poker
 
 import (
 	"io"
+	"os"
 	"testing"
 )
 
@@ -22,4 +23,22 @@ func TestTape_Write(t *testing.T) {
 	if got != want {
 		t.Errorf("got %q want %q", got, want)
 	}
+}
+
+func createTempFile(t testing.TB, initialData string) (*os.File, func()) {
+	t.Helper()
+
+	tmpfile, err := os.CreateTemp("", "db")
+	if err != nil {
+		t.Fatalf("could not create temp file %v", err)
+	}
+
+	tmpfile.Write([]byte(initialData))
+
+	removeFile := func() {
+		tmpfile.Close()
+		os.Remove(tmpfile.Name())
+	}
+
+	return tmpfile, removeFile
 }
