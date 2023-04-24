@@ -8,11 +8,6 @@ import (
 
 func TestFileSystemStore(t *testing.T) {
 	t.Run("league from a reader", func(t *testing.T) {
-		// strings.NewReader implements Reader and Seeker interfaces (not Write though)
-		// database := strings.NewReader(`[
-		// 	{"Name": "Cleo", "Wins": 10},
-		// 	{"Name": "Chris", "Wins": 33}]`)
-
 		database, cleanDatabase := createTempFile(t, `[
 			{"Name": "Chris", "Wins": 33},
  			{"Name": "Cleo", "Wins": 10}]`)
@@ -38,10 +33,6 @@ func TestFileSystemStore(t *testing.T) {
 	})
 
 	t.Run("get player score", func(t *testing.T) {
-		// database := strings.NewReader(`[
-		// 	{"Name": "Cleo", "Wins": 10},
-		// 	{"Name": "Chris", "Wins": 33}]`)
-
 		database, cleanDatabase := createTempFile(t, `[
  			{"Name": "Cleo", "Wins": 10},
  			{"Name": "Chris", "Wins": 33}]`)

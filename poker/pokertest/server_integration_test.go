@@ -2,10 +2,10 @@ package pokertest
 
 import (
 	"fmt"
+	"learn-go-with-tests/poker"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"learn-go-with-tests/poker"
 )
 
 func TestRecordingWinsAndRetrievingThem(t *testing.T) {
@@ -17,7 +17,11 @@ func TestRecordingWinsAndRetrievingThem(t *testing.T) {
 		t.Fatalf("didn't expect an error but got one, %v", err)
 	}
 
-	server := poker.NewPlayerServer(store)
+	server, err := poker.NewPlayerServer(store, &GameSpy{})
+	if err != nil {
+		t.Fatal("problem creating player server", err)
+	}
+
 	const player = "Pepper"
 	const playersWins = 3
 

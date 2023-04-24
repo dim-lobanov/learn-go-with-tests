@@ -2,9 +2,10 @@ package pokertest
 
 import (
 	"fmt"
+	"io"
+	"learn-go-with-tests/poker"
 	"testing"
 	"time"
-	"learn-go-with-tests/poker"
 )
 
 // StubPlayerStore implements PlayerStore for testing purposes.
@@ -28,6 +29,25 @@ func (s *StubPlayerStore) RecordWin(name string) {
 // GetLeague returns League.
 func (s *StubPlayerStore) GetLeague() poker.League {
 	return s.League
+}
+
+type GameSpy struct {
+	StartCalled     bool
+	StartCalledWith int
+	BlindAlert      []byte
+
+	FinishedCalled   bool
+	FinishCalledWith string
+}
+
+func (g *GameSpy) Start(numberOfPlayers int, out io.Writer) {
+	g.StartCalled = true
+	g.StartCalledWith = numberOfPlayers
+}
+
+func (g *GameSpy) Finish(winner string) {
+	g.FinishedCalled = true
+	g.FinishCalledWith = winner
 }
 
 // AssertPlayerWin allows you to spy on the store's calls to RecordWin.

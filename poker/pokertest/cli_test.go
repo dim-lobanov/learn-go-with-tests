@@ -3,10 +3,10 @@ package pokertest
 import (
 	"bytes"
 	"io"
+	"learn-go-with-tests/poker"
 	"strings"
 	"testing"
-
-	"learn-go-with-tests/poker"
+	"time"
 )
 
 var dummyBlindAlerter = &SpyBlindAlerter{}
@@ -14,30 +14,7 @@ var dummyPlayerStore = &StubPlayerStore{}
 var dummyStdIn = &bytes.Buffer{}
 var dummyStdOut = &bytes.Buffer{}
 
-type GameSpy struct {
-	StartCalled     bool
-	StartCalledWith int
-
-	FinishedCalled   bool
-	FinishCalledWith string
-}
-
-func (g *GameSpy) Start(numberOfPlayers int) {
-	g.StartCalled = true
-	g.StartCalledWith = numberOfPlayers
-}
-
-func (g *GameSpy) Finish(winner string) {
-	g.FinishedCalled = true
-	g.FinishCalledWith = winner
-}
-
-func userSends(messages ...string) io.Reader {
-	return strings.NewReader(strings.Join(messages, "\n"))
-}
-
 func TestCLI(t *testing.T) {
-
 	t.Run("start game with 3 players and finish game with 'Chris' as winner", func(t *testing.T) {
 		game := &GameSpy{}
 		stdout := &bytes.Buffer{}
@@ -91,6 +68,10 @@ func TestCLI(t *testing.T) {
 	})
 }
 
+func userSends(messages ...string) io.Reader {
+	return strings.NewReader(strings.Join(messages, "\n"))
+}
+
 func assertGameStartedWith(t testing.TB, game *GameSpy, numberOfPlayersWanted int) {
 	t.Helper()
 	if game.StartCalledWith != numberOfPlayersWanted {
@@ -114,7 +95,12 @@ func assertGameNotStarted(t testing.TB, game *GameSpy) {
 
 func assertFinishCalledWith(t testing.TB, game *GameSpy, winner string) {
 	t.Helper()
-	if game.FinishCalledWith != winner {
+
+	passed := retryUntil(500*time.Millisecond, func() bool {
+		return game.FinishCalledWith == winner
+	})
+
+	if !passed {
 		t.Errorf("expected finish called with %q but got %q", winner, game.FinishCalledWith)
 	}
 }

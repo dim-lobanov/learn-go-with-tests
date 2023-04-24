@@ -2,12 +2,12 @@ package poker
 
 import (
 	"fmt"
-	"os"
+	"io"
 	"time"
 )
 
 type BlindAlerter interface {
-	ScheduleAlertAt(duration time.Duration, amount int)
+	ScheduleAlertAt(duration time.Duration, amount int, to io.Writer)
 }
 
 // any type can implement an interface, not just structs
@@ -16,14 +16,13 @@ type BlindAlerter interface {
 //
 // poker.NewCLI(store, os.Stdin, poker.BlindAlerterFunc(poker.StdOutAlerter)).PlayPoker()
 
-type BlindAlerterFunc func(duration time.Duration, amount int)
+type BlindAlerterFunc func(duration time.Duration, amount int, to io.Writer)
 
-func (f BlindAlerterFunc) ScheduleAlertAt(duration time.Duration, amount int) {
-	f(duration, amount)
+func (a BlindAlerterFunc) ScheduleAlertAt(duration time.Duration, amount int, to io.Writer) {
+	a(duration, amount, to)
 }
-
-func StdOutAlerter(duration time.Duration, amount int) {
+func Alerter(duration time.Duration, amount int, to io.Writer) {
 	time.AfterFunc(duration, func() {
-		fmt.Fprintf(os.Stdout, "Blind is now %d\n", amount)
+		fmt.Fprintf(to, "Blind is now %d\n", amount)
 	})
 }

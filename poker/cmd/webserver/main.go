@@ -25,7 +25,13 @@ func main() {
 	if err != nil {
 		log.Fatalf("problem creating file system player store, %v ", err)
 	}
-	server := poker.NewPlayerServer(store)
+
+	game := poker.NewTexasHoldem(poker.BlindAlerterFunc(poker.Alerter), store)
+	
+	server, err := poker.NewPlayerServer(store, game)
+	if err != nil {
+		log.Fatalf("problem creating server, %v ", err)
+	}
 
 	log.Fatal(http.ListenAndServe(":5000", server)) // takes a port to listen to, starts server (http.Handler) basically
 	// ListenAndServe returns error, so we can wrap it with log
